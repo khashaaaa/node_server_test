@@ -1,45 +1,23 @@
-local base_url = "http://localhost:8082/users"
+local base_url = "http://localhost:3000"
 
-local names = {
-    "John Smith", "Emma Wilson", "Michael Brown", "Sarah Davis", "James Anderson",
-    "Lisa Thompson", "David Miller", "Jennifer White", "Robert Taylor", "Mary Johnson",
-    "William Lee", "Patricia Moore", "Richard Jackson", "Linda Martin", "Thomas Wright",
-    "Elizabeth Hall", "Joseph Clark", "Barbara Lewis", "Charles Young", "Susan King"
-}
-
+local first_names = {"Emma", "Liam", "Olivia", "Noah", "Ava", "Oliver", "Isabella", "Lucas", "Sophia", "Mason"}
+local last_names = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"}
 local domains = {"gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "example.com"}
 
 local request_counter = 0
 local success_counter = 0
 local error_counter = 0
 local start_time = 0
-local used_names = {}
-local email_counter = 0
 
 local function generate_user_data()
-    local available_names = {}
-    for _, name in ipairs(names) do
-        if not used_names[name] then
-            table.insert(available_names, name)
-        end
-    end
-    
-    if #available_names == 0 then
-        used_names = {}
-        available_names = names
-    end
-    
-    local name = available_names[math.random(#available_names)]
-    used_names[name] = true
-    
-    email_counter = email_counter + 1
-    local email = string.format("%s.%d@%s",
-        string.lower(string.gsub(name, " ", ".")),
-        email_counter,
-        domains[math.random(#domains)])
+    local first_name = first_names[math.random(#first_names)]
+    local last_name = last_names[math.random(#last_names)]
+    local domain = domains[math.random(#domains)]
     
     request_counter = request_counter + 1
-    return string.format('{"name":"%s", "email":"%s"}', name, email)
+    local email = string.format("%s.%s.%d@%s", string.lower(first_name), string.lower(last_name), request_counter, domain)
+    
+    return string.format('{"name":"%s %s", "email":"%s"}', first_name, last_name, email)
 end
 
 function init(args)
@@ -49,10 +27,7 @@ end
 
 function request()
     local method = math.random(1, 100)
-    local headers = {
-        ["Content-Type"] = "application/json",
-        ["Accept"] = "application/json"
-    }
+    local headers = { ["Content-Type"] = "application/json", ["Accept"] = "application/json" }
     
     if method <= 40 then
         return wrk.format("GET", base_url, headers)
@@ -94,8 +69,4 @@ function done(summary, latency, requests)
     print(string.format("Requests/sec: %.2f", rps))
     print(string.format("Average Latency: %.2fms", latency.mean/1000))
     print(string.format("Max Latency: %.2fms", latency.max/1000))
-    print(string.format("50th percentile: %.2fms", latency:percentile(50)/1000))
-    print(string.format("90th percentile: %.2fms", latency:percentile(90)/1000))
-    print(string.format("99th percentile: %.2fms", latency:percentile(99)/1000))
-    print("==================\n")
 end

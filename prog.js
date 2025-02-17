@@ -14,7 +14,7 @@ prog.use(express.urlencoded({
     parameterLimit: 100000
 }))
 
-prog.use("/users", UserRouter)
+prog.use("/", UserRouter)
 
 const startServer = async () => {
 
