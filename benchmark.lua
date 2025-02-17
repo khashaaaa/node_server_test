@@ -1,4 +1,4 @@
-local base_url = "http://localhost:3000"
+local base_url = "http://localhost:8082"
 
 local first_names = {"Emma", "Liam", "Olivia", "Noah", "Ava", "Oliver", "Isabella", "Lucas", "Sophia", "Mason"}
 local last_names = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"}
