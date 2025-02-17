@@ -1,7 +1,8 @@
+const { DataTypes } = require("sequelize")
 const { sequelize } = require("../config/connector")
 
 const User = sequelize.define(
-	"user",
+	"users",
 	{
 		id: {
 			type: DataTypes.INTEGER,
@@ -18,7 +19,7 @@ const User = sequelize.define(
 		}
 	},
 	{
-		tableName: "user",
+		tableName: "users",
 	}
 )
 

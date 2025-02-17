@@ -7,7 +7,6 @@ const {
 
 const UserRouter = Router()
 
-UserRouter.post("/login", login)
 UserRouter.get("/list", showUsers)
 UserRouter.post("/create", createUser)
 UserRouter.delete("/delete/:id", deleteUser)
