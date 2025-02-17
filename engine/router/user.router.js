@@ -3,12 +3,14 @@ const {
 	createUser,
 	showUsers,
 	deleteUser,
+	editUser,
 } = require("../controller/user.controller")
 
 const UserRouter = Router()
 
-UserRouter.get("/list", showUsers)
+UserRouter.get("/", showUsers)
 UserRouter.post("/create", createUser)
-UserRouter.delete("/delete/:id", deleteUser)
+UserRouter.put("/:id/update", editUser)
+UserRouter.delete("/:id/delete", deleteUser)
 
 module.exports = { UserRouter }

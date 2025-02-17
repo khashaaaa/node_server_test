@@ -5,21 +5,31 @@ module.exports = {
 		try {
 			const { name, email } = req.body;
 
+			if (!name || !email) {
+				return res.status(400).json({ response: "Name and email are required" });
+			}
+
 			await User.create({ name, email });
 
 			return res.status(201).json({ response: "User created successfully" });
 		} catch (error) {
-			res.status(500).json({ response: error.message });
+			console.error(error);
+			return res.status(500).json({ response: "Internal server error" });
 		}
 	},
 
 	showUsers: async (req, res) => {
 		try {
-			const users = await User.findAll({ attributes: ["name", "email"] });
+			const users = await User.findAll({ attributes: ["id", "name", "email"] });
+
+			if (users.length === 0) {
+				return res.status(404).json({ response: "No users found" });
+			}
 
 			return res.status(200).json({ response: users });
 		} catch (error) {
-			res.status(500).json({ response: error.message });
+			console.error(error);
+			return res.status(500).json({ response: "Internal server error" });
 		}
 	},
 
@@ -27,11 +37,20 @@ module.exports = {
 		try {
 			const { id, name, email } = req.body;
 
-			await User.update({ name, email }, { where: { id } });
+			if (!id || !name || !email) {
+				return res.status(400).json({ response: "ID, name, and email are required" });
+			}
+
+			const [updated] = await User.update({ name, email }, { where: { id } });
+
+			if (updated === 0) {
+				return res.status(404).json({ response: "User not found" });
+			}
 
 			return res.status(200).json({ response: "User updated successfully" });
 		} catch (error) {
-			res.status(500).json({ response: error.message });
+			console.error(error);
+			return res.status(500).json({ response: "Internal server error" });
 		}
 	},
 
@@ -39,11 +58,20 @@ module.exports = {
 		try {
 			const { id } = req.params;
 
-			await User.destroy({ where: { id } });
+			if (!id) {
+				return res.status(400).json({ response: "User ID is required" });
+			}
+
+			const deleted = await User.destroy({ where: { id } });
+
+			if (deleted === 0) {
+				return res.status(404).json({ response: "User not found" });
+			}
 
 			return res.status(200).json({ response: "User deleted successfully" });
 		} catch (error) {
-			res.status(500).json({ response: error.message });
+			console.error(error);
+			return res.status(500).json({ response: "Internal server error" });
 		}
 	},
 };
